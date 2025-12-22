@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ca">
+  <head>
+    <meta charset="UTF-8" />
+    <title>RURAL-GO VIVA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+    <script>
+      // Càrrega la clau de Google Maps des de variables d'entorn o window
+      // Per a producció, hauràs de configurar una clau real a través de .env o deployment
+      window.GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyDemoKey';
+    </script>
+  </body>
+</html>
