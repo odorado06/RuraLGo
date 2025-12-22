@@ -32,7 +32,7 @@ export const useTripStore = defineStore('trip', {
       { id: 'cultura', name: 'RURAL-GO Cultura', icon: '🎭', color: '#FF6B6B', description: 'Teatre, cinema, museus, concerts' },
       { id: 'familia', name: 'RURAL-GO Família', icon: '👨‍👩‍👧', color: '#4ECDC4', description: 'Visites familiars i celebracions' },
       { id: 'salut', name: 'RURAL-GO Salut', icon: '🏥', color: '#45B7D1', description: 'CAP, hospital, farmàcia' },
-      { id: 'compres', name: 'RURAL-GO Compres', icon: '🛍️', color: '#96CEB4', description: 'Compres i ajuda amb les bosses' },
+      { id: 'compres', name: 'RURAL-GO Serveis Comunitaris', icon: '🛒', color: '#96CEB4', description: 'Anar de compres, voluntariat i activitats locals' },
       { id: 'natura', name: 'RURAL-GO Natura', icon: '🌲', color: '#FFEAA7', description: 'Passejades i activitats naturals' }
     ],
     

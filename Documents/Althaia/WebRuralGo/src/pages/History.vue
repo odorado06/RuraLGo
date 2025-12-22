@@ -29,7 +29,7 @@
           <option value="cultura">RURAL-GO Cultura</option>
           <option value="familia">RURAL-GO Família</option>
           <option value="salut">RURAL-GO Salut</option>
-          <option value="compres">RURAL-GO Compres</option>
+          <option value="compres">RURAL-GO Serveis Comunitaris</option>
           <option value="natura">RURAL-GO Natura</option>
         </select>
       </div>
@@ -258,7 +258,7 @@ const getServiceName = (service) => {
     cultura: 'RURAL-GO Cultura',
     familia: 'RURAL-GO Família',
     salut: 'RURAL-GO Salut',
-    compres: 'RURAL-GO Compres',
+    compres: 'RURAL-GO Serveis Comunitaris',
     natura: 'RURAL-GO Natura'
   };
   return services[service] || service;

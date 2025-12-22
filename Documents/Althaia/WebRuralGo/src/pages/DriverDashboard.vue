@@ -520,10 +520,12 @@ const acceptTrip = (tripId) => {
         tripInStore.driverName = driverName;
         tripInStore.driverPhone = driverPhone;
         tripInStore.driverAssigned = true;
+        const driverLocation = { lat: 41.3, lng: 2.0 }; // Ubicació actual del conductor
         tripInStore.driver = {
           id: driverId.value,
           name: driverName,
-          phone: driverPhone
+          phone: driverPhone,
+          location: driverLocation
         };
       }
     }

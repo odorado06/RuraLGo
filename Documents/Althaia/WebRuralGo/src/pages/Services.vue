@@ -145,7 +145,7 @@ const tripStore = useTripStore()
 const selectedService = ref(null)
 const selectedCategory = ref('Tots')
 
-const categories = ['Tots', 'Cultura', 'Família', 'Salut', 'Compres', 'Natura', 'Urgència']
+const categories = ['Tots', 'Cultura', 'Família', 'Salut', 'Serveis Comunitaris', 'Natura', 'Urgència']
 
 const services = [
   {
@@ -222,20 +222,20 @@ const services = [
   },
   {
     id: 'compres',
-    name: 'RURAL-GO Compres',
-    icon: '🛍️',
-    category: 'Compres',
-    description: 'Transport a centres comercials, supermercats i botigues amb ajuda de carrega.',
+    name: 'RURAL-GO Serveis Comunitaris',
+    icon: '🛒',
+    category: 'Serveis Comunitaris',
+    description: 'Anar de compres, activitats comunitàries, voluntariat i serveis locals.',
     baseFare: 2.00,
     pricePerKm: 0.50,
     minDuration: 30,
     rating: 4.7,
     reviews: 198,
     useCases: [
-      'Compres al centre comercial',
-      'Supermercats i botigues',
-      'Compres de roba i electrodomèstics',
-      'Ajuda de carrega i descarga'
+      'Anar de compres al centre comercial',
+      'Compres a supermercats i botigues',
+      'Activitats comunitàries locals',
+      'Ajuda amb bosses i carrega'
     ],
     features: ['Ajuda carrega', 'Flex horari', 'Suport compres', 'Flexible'],
     availability: {

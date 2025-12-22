@@ -140,7 +140,7 @@ export const matchingAlgorithm = {
     if (mobility !== 'normal') {
       // Recomanacions d'activitats accessibles
       recommendations.push('natura'); // Passejos accessibles
-      recommendations.push('compres'); // Compres online i entrega
+      recommendations.push('compres'); // Serveis comunitaris i compres
     } else {
       // Per a persones amb mobilitat normal
       recommendations.push('cultura');
