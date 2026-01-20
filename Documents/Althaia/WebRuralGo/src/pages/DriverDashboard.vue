@@ -1,22 +1,28 @@
 <template>
-  <div class="driver-dashboard">
+  <div class="driver-dashboard" role="main" aria-label="Panell del conductor">
     <!-- Header -->
     <div class="header">
       <div class="header-title">
-        <svg class="title-icon" viewBox="0 0 24 24">
+        <svg class="title-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path :d="mdiCar" fill="currentColor" />
         </svg>
         <h1>Panell del Conductor</h1>
       </div>
       <div class="header-actions">
-        <button @click="toggleOnlineStatus" class="toggle-status" :class="{ online: isOnline }">
-          <svg class="status-icon" viewBox="0 0 24 24">
+        <button 
+          @click="toggleOnlineStatus" 
+          class="toggle-status" 
+          :class="{ online: isOnline }"
+          :aria-label="isOnline ? 'Estar fora de línia' : 'Estar en línia'"
+          :aria-pressed="isOnline"
+        >
+          <svg class="status-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path :d="mdiCircle" fill="currentColor" />
           </svg>
           {{ isOnline ? 'En línia' : 'Fora de línia' }}
         </button>
-        <button @click="goToProfile" class="profile-btn">
-          <svg viewBox="0 0 24 24">
+        <button @click="goToProfile" class="profile-btn" aria-label="Anar al teu perfil">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
             <path :d="mdiAccount" fill="currentColor" />
           </svg>
           Perfil
@@ -25,9 +31,9 @@
     </div>
 
     <!-- Estadístiques -->
-    <div class="stats-grid">
+    <div class="stats-grid" role="region" aria-label="Estadístiques del conductor">
       <div class="stat-card">
-        <svg class="stat-icon" viewBox="0 0 24 24">
+        <svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path :d="mdiCar" fill="currentColor" />
         </svg>
         <div class="stat-content">
@@ -36,7 +42,7 @@
         </div>
       </div>
       <div class="stat-card">
-        <svg class="stat-icon" viewBox="0 0 24 24">
+        <svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path :d="mdiStar" fill="currentColor" />
         </svg>
         <div class="stat-content">
@@ -45,7 +51,7 @@
         </div>
       </div>
       <div class="stat-card">
-        <svg class="stat-icon" viewBox="0 0 24 24">
+        <svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path :d="mdiCurrencyEur" fill="currentColor" />
         </svg>
         <div class="stat-content">
@@ -123,7 +129,7 @@
             </svg>
             <span class="label">Camí:</span>
             <span class="value" :class="getPathClass(currentTrip.pathCondition)">
-              {{ currentTrip.pathCondition }}
+              {{ getPathConditionName(currentTrip.pathCondition) }}
             </span>
           </div>
         </div>
@@ -204,7 +210,7 @@
             <div class="card-detail">
               <span class="label">Camí:</span>
               <span class="value" :class="getPathClass(trip.pathCondition)">
-                {{ trip.pathCondition }}
+                {{ getPathConditionName(trip.pathCondition) }}
               </span>
             </div>
           </div>
@@ -290,7 +296,7 @@
                 <path :d="mdiRoadVariant" fill="currentColor" />
               </svg>
               <span class="label">Camí:</span>
-              <span class="value" :class="getPathClass(selectedTrip.pathCondition)">{{ selectedTrip.pathCondition }}</span>
+              <span class="value" :class="getPathClass(selectedTrip.pathCondition)">{{ getPathConditionName(selectedTrip.pathCondition) }}</span>
             </div>
           </div>
         </div>
@@ -391,10 +397,12 @@ const authStore = useAuthStore();
 const isOnline = ref(true);
 const selectedTrip = ref(null);
 const driverId = computed(() => authStore.currentUser?.id || 2);
-
 // Obtenir el viatge actual (acceptat per aquest conductor)
 const currentTrip = computed(() => {
-  return notificationStore.activeTrips[driverId.value] || null;
+  const trip = notificationStore.activeTrips[driverId.value] || null;
+  const allKeys = Object.keys(notificationStore.activeTrips);
+
+  return trip;
 });
 
 let map1 = null;
@@ -451,6 +459,19 @@ const getVehicleType = (vehicleId) => {
   return types[vehicleId] || vehicleId;
 };
 
+// Path condition options
+const pathConditions = [
+  { value: 'good', name: 'Ben pavimentada', icon: mdiCheck },
+  { value: 'medium', name: 'Estat normal', icon: mdiAlert },
+  { value: 'poor', name: 'Mal estat', icon: mdiClose },
+  { value: 'rural', name: 'Via rural', icon: mdiRoadVariant }
+];
+
+const getPathConditionName = (pathValue) => {
+  const condition = pathConditions.find(p => p.value === pathValue);
+  return condition?.name || pathValue;
+};
+
 const getPathClass = (pathCondition) => {
   return pathCondition.includes('rural') ? 'path-rural' : 'path-urban';
 };
@@ -504,6 +525,7 @@ const toggleOnlineStatus = () => {
 };
 
 const acceptTrip = (tripId) => {
+  // tripId aquí es el ID del notificationStore
   const trip = availableTrips.value.find(t => t.id === tripId);
   if (trip) {
     // Acceptar el viatge via notificationStore
@@ -602,7 +624,7 @@ const openGoogleMapsRoute = (routeType) => {
 
   const driverLocation = { lat: 41.3, lng: 2.0 };
   const pickupLocation = selectedTrip.value.clientLocation || { lat: 41.4, lng: 2.1 };
-  const destinationLocation = { lat: 41.45, lng: 2.15 };
+  const destinationLocation = selectedTrip.value.destinationCoords || { lat: 41.45, lng: 2.15 };
 
   let origin, destination;
 
@@ -632,10 +654,10 @@ const initializeMaps = async () => {
 
     await nextTick();
 
-    // Ubicacions simulades per demostració
+    // Ubicacions reals del viatge
     const driverLocation = { lat: 41.3, lng: 2.0 };
     const pickupLocation = selectedTrip.value.clientLocation || { lat: 41.4, lng: 2.1 };
-    const destinationLocation = { lat: 41.45, lng: 2.15 };
+    const destinationLocation = selectedTrip.value.destinationCoords || { lat: 41.45, lng: 2.15 };
 
     // Mapa 1: Conductor a Client
     initializeDriverToClientMap(driverLocation, pickupLocation);
@@ -781,8 +803,9 @@ watch(selectedTrip, async (newTrip) => {
 
 .header h1 {
   margin: 0;
-  color: #2c3e50;
+  color: #000000;
   font-size: 28px;
+  font-weight: 700;
 }
 
 .header-actions {
@@ -792,43 +815,57 @@ watch(selectedTrip, async (newTrip) => {
 
 .toggle-status {
   padding: 10px 20px;
-  background: #e74c3c;
+  background: #cc0000;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
+  font-size: 14px;
+  min-height: 40px;
 }
 
 .toggle-status.online {
-  background: #27ae60;
+  background: #008800;
 }
 
 .toggle-status:hover {
   transform: translateY(-2px);
 }
 
+.toggle-status:focus {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
 .profile-btn {
   padding: 10px 20px;
-  background: #4ECDC4;
+  background: #0066cc;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
+  font-size: 14px;
+  min-height: 40px;
 }
 
 .profile-btn:hover {
-  background: #44A08D;
+  background: #003d99;
   transform: translateY(-2px);
+}
+
+.profile-btn:focus {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
   margin-bottom: 30px;
 }
 
@@ -838,8 +875,9 @@ watch(selectedTrip, async (newTrip) => {
   border-radius: 12px;
   display: flex;
   gap: 15px;
-  align-items: center;
+  align-items: flex-start;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
   transition: transform 0.3s ease;
 }
 
@@ -899,15 +937,16 @@ watch(selectedTrip, async (newTrip) => {
 .stat-label {
   margin: 0;
   font-size: 12px;
-  color: #7f8c8d;
+  color: #333333;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .stat-value {
   margin: 5px 0 0 0;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
-  color: #2c3e50;
+  color: #0066cc;
 }
 
 .current-trip-section,
@@ -922,8 +961,9 @@ watch(selectedTrip, async (newTrip) => {
 .current-trip-section h2,
 .available-section h2 {
   margin-top: 0;
-  color: #2c3e50;
-  border-bottom: 2px solid #4ECDC4;
+  color: #000000;
+  font-weight: 700;
+  border-bottom: 2px solid #0066cc;
   padding-bottom: 10px;
 }
 
@@ -1376,6 +1416,24 @@ watch(selectedTrip, async (newTrip) => {
 
 .btn-reject:hover {
   background: #c0392b;
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+button:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
 }
 
 @media (max-width: 768px) {

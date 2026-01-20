@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useNotificationStore } from './notificationStore';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -159,17 +160,15 @@ export const useAuthStore = defineStore('auth', {
 
     // Logout
     logout() {
-      console.log('🚪 Ejecutando logout en authStore...');
       this.currentUser = null;
       this.isAuthenticated = false;
       this.userRole = null;
       this.loginError = null;
       if (this.sessionTimeout) clearTimeout(this.sessionTimeout);
-      console.log('✅ Estado de logout:', {
-        currentUser: this.currentUser,
-        isAuthenticated: this.isAuthenticated,
-        userRole: this.userRole
-      });
+      
+      // Limpiar el notificationStore
+      const notificationStore = useNotificationStore();
+      notificationStore.clearStore();
     },
 
     // Registre

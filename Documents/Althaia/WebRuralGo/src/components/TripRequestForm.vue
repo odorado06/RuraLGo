@@ -123,17 +123,17 @@
           <button 
             @click="decreaseAssistants" 
             class="assistants-btn minus"
-            :disabled="formData.numberOfAssistants <= 0"
+            :disabled="formData.numberOfAssistants <= 1"
           >
             −
           </button>
           <input 
             v-model.number="formData.numberOfAssistants" 
             type="number" 
-            min="0" 
+            min="1" 
             max="3" 
             class="input assistants-input"
-            placeholder="0"
+            placeholder="1"
           />
           <button 
             @click="increaseAssistants" 
@@ -296,7 +296,7 @@ const formData = ref({
   destination: '',
   destinationNumber: '',
   destinationCoords: null,
-  numberOfAssistants: 0,
+  numberOfAssistants: 1,
   tripDate: '',
   tripTime: '',
   pathCondition: 'good',
@@ -332,7 +332,7 @@ const increaseAssistants = () => {
 };
 
 const decreaseAssistants = () => {
-  if (formData.value.numberOfAssistants > 0) {
+  if (formData.value.numberOfAssistants > 1) {
     formData.value.numberOfAssistants--;
   }
 };
@@ -650,7 +650,7 @@ const submitRequest = async () => {
     destination: formData.value.destination,
     destinationNumber: formData.value.destinationNumber || '---',
     service: selectedService.value,
-    numberOfAssistants: formData.value.numberOfAssistants,
+    assistants: formData.value.numberOfAssistants,
     mode: 'planificat',
     pathCondition: formData.value.pathCondition,
     tripDate: formData.value.tripDate,
@@ -671,7 +671,7 @@ const submitRequest = async () => {
     pickupNumber: formData.value.pickupNumber || '---',
     destination: formData.value.destination,
     destinationNumber: formData.value.destinationNumber || '---',
-    numberOfAssistants: formData.value.numberOfAssistants,
+    assistants: formData.value.numberOfAssistants,
     mode: 'planificat',
     pathCondition: formData.value.pathCondition,
     tripDate: formData.value.tripDate,

@@ -11,102 +11,35 @@
     <!-- Main App Content - only visible if terms are accepted -->
     <template v-if="!showTermsModal">
       <header class="app-header">
+        <!-- Logo (Left) -->
         <div class="header-left">
-        <router-link to="/" class="logo">
-          <svg class="logo-icon" viewBox="0 0 24 24">
-            <path :d="mdiEarth" fill="currentColor" />
-          </svg>
-          RURAL-GO VIVA
-        </router-link>
-      </div>
-
-      <nav class="header-nav" v-if="isAuthenticated">
-        <router-link to="/">Inici</router-link>
-        <router-link to="/services">
-          <svg class="nav-icon" viewBox="0 0 24 24">
-            <path :d="mdiTarget" fill="currentColor" />
-          </svg>
-          Serveis
-        </router-link>
-        <router-link v-if="userRole === 'client'" to="/planification">
-          <svg class="nav-icon" viewBox="0 0 24 24">
-            <path :d="mdiPhone" fill="currentColor" />
-          </svg>
-          Panel Client
-        </router-link>
-        <router-link v-if="userRole === 'client'" to="/my-trips">
-          <svg class="nav-icon" viewBox="0 0 24 24">
-            <path :d="mdiListBox" fill="currentColor" />
-          </svg>
-          Els meus viatges
-        </router-link>
-        <router-link v-if="userRole === 'driver'" to="/driver-dashboard">
-          <svg class="nav-icon" viewBox="0 0 24 24">
-            <path :d="mdiCar" fill="currentColor" />
-          </svg>
-          Panel Conductor
-        </router-link>
-        <router-link v-if="userRole === 'admin'" to="/admin/registrations">
-          <svg class="nav-icon" viewBox="0 0 24 24">
-            <path :d="mdiCog" fill="currentColor" />
-          </svg>
-          Gestionar Registres
-        </router-link>
-        <router-link to="/emergency">
-          <svg class="nav-icon" viewBox="0 0 24 24">
-            <path :d="mdiAlert" fill="currentColor" />
-          </svg>
-          Emergències
-        </router-link>
-        <router-link v-if="userRole === 'driver'" to="/history">
-          <svg class="nav-icon" viewBox="0 0 24 24">
-            <path :d="mdiClockOutline" fill="currentColor" />
-          </svg>
-          Historial
-        </router-link>
-        <router-link to="/ratings">
-          <svg class="nav-icon" viewBox="0 0 24 24">
-            <path :d="mdiStar" fill="currentColor" />
-          </svg>
-          Valoracions
-        </router-link>
-        <router-link to="/domus-viva">
-          <svg class="nav-icon" viewBox="0 0 24 24">
-            <path :d="mdiTheater" fill="currentColor" />
-          </svg>
-          Domus Viva
-        </router-link>
-      </nav>
-
-      <nav class="header-nav" v-else>
-        <router-link to="/">Inici</router-link>
-      </nav>
-
-      <div class="header-right">
-        <div v-if="isAuthenticated" class="user-menu">
-          <span class="user-name">{{ currentUser?.name }}</span>
-          <router-link to="/profile" class="btn btn-small btn-primary">
-            <svg class="btn-icon" viewBox="0 0 24 24">
-              <path :d="mdiCog" fill="currentColor" />
+          <router-link to="/" class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24">
+              <path :d="mdiEarth" fill="currentColor" />
             </svg>
-            Perfil
-          </router-link>
-          <button @click="logout" class="btn btn-small btn-secondary">
-            <svg class="btn-icon" viewBox="0 0 24 24">
-              <path :d="mdiLogout" fill="currentColor" />
-            </svg>
-            Logout
-          </button>
-        </div>
-        <div v-else class="auth-links">
-          <router-link to="/login" class="btn btn-primary">
-            <svg class="btn-icon" viewBox="0 0 24 24">
-              <path :d="mdiLock" fill="currentColor" />
-            </svg>
-            Accés
+            RURAL-GO VIVA
           </router-link>
         </div>
-      </div>
+
+        <!-- Right Side (Auth/User + Hamburger) -->
+        <div class="header-right">
+          <div v-if="isAuthenticated" class="user-menu">
+            <router-link to="/profile" class="btn btn-small btn-primary">
+              <svg class="btn-icon" viewBox="0 0 24 24">
+                <path :d="mdiAccount" fill="currentColor" />
+              </svg>
+              Perfil
+            </router-link>
+          </div>
+          <div v-else class="auth-links">
+            <router-link to="/login" class="btn btn-primary btn-access">
+              Accés
+            </router-link>
+          </div>
+
+          <!-- Hamburger Menu -->
+          <HamburgerMenu />
+        </div>
       </header>
 
       <main class="main-content">
@@ -129,6 +62,7 @@ import { useAuthStore } from './store/authStore';
 import TermsAndConditionsModal from './components/TermsAndConditionsModal.vue';
 import NotificationCenter from './components/NotificationCenter.vue';
 import Footer from './components/Footer.vue';
+import HamburgerMenu from './components/HamburgerMenu.vue';
 import {
   mdiTarget,
   mdiPhone,
@@ -141,7 +75,8 @@ import {
   mdiCog,
   mdiLogout,
   mdiLock,
-  mdiEarth
+  mdiEarth,
+  mdiAccount
 } from '@mdi/js';
 
 const router = useRouter();
@@ -186,38 +121,39 @@ const logout = () => {
   z-index: 100;
   background: white;
   border-bottom: 1px solid #e9ecef;
-  padding: 16px 40px;
-  display: flex;
-  justify-content: space-between;
+  padding: clamp(12px, 3vw, 16px) clamp(15px, 5vw, 40px);
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 30px;
+  gap: clamp(15px, 3vw, 30px);
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  flex-wrap: wrap;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 40px;
+  flex-shrink: 0;
 }
 
 .logo {
-  font-size: 22px;
+  font-size: clamp(16px, 4vw, 22px);
   font-weight: 800;
   color: #2E7D6E;
   text-decoration: none;
   transition: var(--transition);
-  padding: 8px 0;
+  padding: clamp(4px, 1vw, 8px) 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: clamp(6px, 1.5vw, 10px);
   letter-spacing: -0.5px;
+  white-space: nowrap;
 }
 
 .logo-icon {
-  width: 28px;
-  height: 28px;
+  width: clamp(20px, 5vw, 28px);
+  height: clamp(20px, 5vw, 28px);
   color: #2E7D6E;
+  flex-shrink: 0;
 }
 
 .logo:hover {
@@ -225,81 +161,78 @@ const logout = () => {
   opacity: 0.9;
 }
 
-.nav-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 4px;
+/* Center Navigation - Home Button */
+.header-center {
+  display: none;
 }
 
-.btn-icon {
-  width: 16px;
-  height: 16px;
+.home-btn {
+  display: none;
 }
 
-.icon {
-  font-size: 16px;
-  margin-right: 4px;
-}
-
-.header-nav {
-  display: flex;
-  gap: 0;
-  flex: 1;
-  justify-content: center;
-}
-
-.header-nav a {
-  color: #1a1a1a;
-  text-decoration: none;
-  padding: 8px 16px;
-  border-bottom: 3px solid transparent;
-  transition: var(--transition);
-  font-size: 14px;
-  font-weight: 500;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.header-nav a:hover {
-  color: #2E7D6E;
-  border-bottom-color: #2E7D6E;
-}
-
-.header-nav a.router-link-active {
-  color: #2E7D6E;
-  border-bottom-color: #2E7D6E;
-}
-
+/* Right Side */
 .header-right {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: clamp(12px, 2.5vw, 20px);
+  flex-shrink: 0;
 }
 
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(8px, 1.5vw, 12px);
 }
 
 .user-name {
-  font-size: 14px;
+  font-size: clamp(11px, 2vw, 14px);
   color: #1a1a1a;
   white-space: nowrap;
   font-weight: 500;
+  min-width: auto;
 }
 
 .auth-links {
   display: flex;
-  gap: 10px;
+  gap: clamp(8px, 1.5vw, 10px);
   align-items: center;
 }
 
 .btn-small {
-  padding: 8px 16px;
-  font-size: 13px;
+  padding: clamp(8px, 1.5vw, 10px) clamp(12px, 2vw, 16px);
+  font-size: clamp(11px, 2vw, 13px);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4px, 1vw, 6px);
+}
+
+.btn-access {
+  padding: clamp(10px, 2vw, 14px) clamp(18px, 3.5vw, 28px);
+  font-size: clamp(13px, 2.3vw, 16px);
+  font-weight: 600;
+  min-height: 48px;
+  white-space: nowrap;
+}
+
+.btn-icon {
+  width: clamp(12px, 2.5vw, 16px);
+  height: clamp(12px, 2.5vw, 16px);
+  flex-shrink: 0;
+}
+
+.nav-icon {
+  width: clamp(14px, 3vw, 18px);
+  height: clamp(14px, 3vw, 18px);
+  margin-right: clamp(2px, 0.5vw, 4px);
+  flex-shrink: 0;
+}
+
+.icon {
+  font-size: clamp(12px, 3vw, 16px);
+  flex-shrink: 0;
+  margin-right: 4px;
 }
 
 /* MAIN CONTENT */
@@ -310,79 +243,239 @@ const logout = () => {
 }
 
 /* RESPONSIVE */
+@media (max-width: 1400px) {
+  .app-header {
+    padding: clamp(12px, 2vw, 16px) clamp(15px, 4vw, 40px);
+  }
+
+  .home-btn {
+    padding: clamp(8px, 1.8vw, 10px) clamp(14px, 2.5vw, 20px);
+    font-size: clamp(13px, 2vw, 15px);
+  }
+
+  .btn-access {
+    padding: clamp(8px, 1.8vw, 10px) clamp(14px, 2.5vw, 20px);
+    font-size: clamp(12px, 2vw, 13px);
+  }
+}
+
 @media (max-width: 1024px) {
   .app-header {
-    padding: 14px 30px;
-    gap: 20px;
+    padding: clamp(12px, 2.5vw, 14px) clamp(15px, 4vw, 30px);
+    gap: clamp(10px, 2vw, 20px);
   }
 
-  .header-left {
-    gap: 20px;
+  .logo {
+    font-size: clamp(14px, 3.5vw, 20px);
   }
 
-  .header-nav {
-    gap: 0;
+  .home-btn {
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(12px, 1.8vw, 14px);
+    min-height: 40px;
   }
 
-  .header-nav a {
-    padding: 8px 12px;
-    font-size: 13px;
+  .header-right {
+    gap: clamp(10px, 2vw, 15px);
+  }
+
+  .btn-small {
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 1.5vw, 12px);
+    font-size: clamp(10px, 1.6vw, 12px);
+    min-height: 40px;
+  }
+
+  .btn-access {
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(11px, 1.8vw, 12px);
+    min-height: 40px;
   }
 }
 
 @media (max-width: 768px) {
   .app-header {
-    flex-direction: column;
-    gap: 12px;
-    padding: 12px 16px;
-    align-items: flex-start;
+    grid-template-columns: auto auto 1fr auto;
+    gap: clamp(8px, 2vw, 12px);
+    padding: clamp(10px, 2vw, 12px) clamp(10px, 3vw, 16px);
   }
 
   .header-left {
-    width: 100%;
-    justify-content: space-between;
+    order: 1;
   }
 
-  .header-nav {
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 5px;
+  .header-center {
+    order: 3;
+    flex: 0 1 auto;
+    margin-left: auto;
   }
 
-  .header-nav a {
-    padding: 6px 10px;
-    font-size: 12px;
+  .home-btn {
+    padding: clamp(6px, 1.2vw, 8px) clamp(10px, 1.5vw, 12px);
+    font-size: clamp(11px, 1.5vw, 12px);
+    min-height: 40px;
   }
 
   .header-right {
-    width: 100%;
-    justify-content: space-between;
-    margin-top: 8px;
+    order: 2;
+    gap: clamp(6px, 1.5vw, 10px);
+    margin-left: auto;
+  }
+
+  .user-menu {
+    gap: clamp(6px, 1.5vw, 10px);
   }
 
   .user-name {
-    font-size: 12px;
+    font-size: clamp(10px, 1.5vw, 11px);
+    display: none;
   }
 
   .btn-small {
-    padding: 6px 12px;
-    font-size: 12px;
+    padding: clamp(6px, 1.5vw, 8px) clamp(8px, 1.5vw, 12px);
+    font-size: clamp(10px, 1.5vw, 11px);
+    min-height: 40px;
+  }
+
+  .btn-access {
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 1.5vw, 12px);
+    font-size: clamp(10px, 1.5vw, 11px);
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-header {
+    grid-template-columns: auto 1fr auto;
+    gap: clamp(6px, 1.5vw, 10px);
+    padding: clamp(8px, 1.5vw, 10px) clamp(8px, 2.5vw, 12px);
+  }
+
+  .header-left {
+    order: 1;
+  }
+
+  .header-center {
+    order: 2;
+    flex: 1;
+  }
+
+  .logo {
+    font-size: clamp(14px, 4vw, 18px);
+    gap: clamp(4px, 1vw, 6px);
+  }
+
+  .logo-icon {
+    width: clamp(16px, 4vw, 20px);
+    height: clamp(16px, 4vw, 20px);
+  }
+
+  .home-btn {
+    padding: clamp(6px, 1.2vw, 8px) clamp(8px, 1.5vw, 12px);
+    font-size: clamp(10px, 1.5vw, 11px);
+    min-height: 40px;
+  }
+
+  .header-right {
+    order: 3;
+    gap: clamp(4px, 1vw, 6px);
+  }
+
+  .user-menu {
+    gap: clamp(4px, 1vw, 6px);
+  }
+
+  .btn-small {
+    padding: clamp(6px, 1.2vw, 8px) clamp(6px, 1.2vw, 10px);
+    font-size: clamp(9px, 1.3vw, 10px);
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  .btn-small .btn-icon {
+    width: clamp(10px, 2.2vw, 12px);
+    height: clamp(10px, 2.2vw, 12px);
+  }
+
+  .btn-access {
+    padding: clamp(6px, 1.2vw, 8px) clamp(8px, 1.5vw, 12px);
+    font-size: clamp(9px, 1.3vw, 10px);
+    min-height: 40px;
   }
 }
 
 @media (max-width: 480px) {
   .app-header {
-    padding: 10px 12px;
+    grid-template-columns: 1fr auto;
+    padding: clamp(44px, 7vw, 56px) clamp(8px, 2vw, 10px) clamp(10px, 2vw, 12px) clamp(8px, 2vw, 10px);
+    gap: clamp(8px, 2vw, 12px);
   }
 
   .logo {
-    font-size: 18px;
+    font-size: clamp(16px, 4.5vw, 20px);
+    gap: clamp(4px, 1vw, 6px);
   }
 
-  .header-nav a {
-    padding: 6px 8px;
-    font-size: 11px;
+  .logo-icon {
+    width: clamp(18px, 4.5vw, 24px);
+    height: clamp(18px, 4.5vw, 24px);
+  }
+
+  .header-right {
+    gap: clamp(6px, 1.5vw, 8px);
+    display: flex;
+    align-items: center;
+  }
+
+  .user-menu {
+    gap: clamp(3px, 0.8vw, 4px);
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .btn-small {
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 1.5vw, 12px);
+    font-size: clamp(8px, 1.2vw, 9px);
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  .btn-small .btn-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .btn-access {
+    padding: clamp(8px, 1.5vw, 10px) clamp(12px, 2vw, 16px);
+    font-size: clamp(11px, 1.8vw, 13px);
+    min-height: 44px;
+  }
+}
+
+/* Landscape mode */
+@media (max-height: 500px) and (orientation: landscape) {
+  .app-header {
+    padding: clamp(6px, 1.5vh, 10px) clamp(12px, 4vw, 20px);
+    gap: clamp(6px, 1.5vh, 10px);
+  }
+
+  .home-btn {
+    padding: clamp(4px, 1vh, 6px) clamp(8px, 1.5vw, 12px);
+    font-size: clamp(9px, 1.8vw, 11px);
+    min-height: 36px;
+  }
+
+  .btn-small {
+    padding: clamp(4px, 1vh, 6px) clamp(8px, 1.5vw, 12px);
+    font-size: clamp(9px, 1.8vw, 11px);
+    min-height: 36px;
+  }
+
+  .btn-access {
+    padding: clamp(4px, 1vh, 6px) clamp(8px, 1.5vw, 12px);
+    font-size: clamp(9px, 1.8vw, 11px);
+    min-height: 36px;
   }
 }
 </style>

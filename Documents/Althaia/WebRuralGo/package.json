@@ -8,9 +8,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
     "@googlemaps/js-api-loader": "^2.0.2",
     "@mdi/js": "^7.4.47",
+    "axios": "^1.13.2",
     "pinia": "^2.1.6",
+    "socket.io-client": "^4.8.3",
     "vue": "^3.4.0",
     "vue-router": "^4.3.0"
   },

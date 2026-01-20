@@ -77,6 +77,7 @@ export const useTripStore = defineStore('trip', {
         service: data.service,
         vehicleType: data.vehicleType,
         assistants: data.assistants || 1,
+        numberOfAssistants: data.assistants || 1,
         mode: data.mode,
         pathCondition: data.pathCondition,
         tripDate: data.tripDate,
@@ -258,7 +259,26 @@ export const useTripStore = defineStore('trip', {
       const trip = this.trips.find(t => t.id === tripId);
       if (trip) {
         trip.status = 'cancelled';
+        
+        // Si el conductor estava assignat, marcar-lo com disponible
+        let assignedDriver = null;
+        if (trip.driver) {
+          const driver = this.drivers.find(d => d.id === trip.driver.id);
+          if (driver) {
+            driver.available = true;
+            assignedDriver = driver;
+          }
+        }
+        
+        // Retornar informació del conductor si estava assignat
+        return {
+          success: true,
+          assignedDriver: assignedDriver,
+          driverId: trip.driver?.id,
+          driverName: trip.driver?.name
+        };
       }
+      return { success: false };
     },
 
     // Valorar viatge

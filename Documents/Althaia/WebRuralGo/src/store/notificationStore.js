@@ -60,9 +60,12 @@ export const useNotificationStore = defineStore('notification', {
 
     // Crear un viatge nou (el client crea)
     createNewTrip(tripData, clientId) {
+      console.log('📝 createNewTrip - tripData recibida:', tripData);
+      console.log('📝 createNewTrip - tripStoreId:', tripData.tripStoreId);
       const trip = {
         ...tripData,
         id: Date.now(),
+        tripStoreId: tripData.tripStoreId,  // IMPORTANTE: Asegurar que se guarda el tripStoreId
         status: 'pending', // pending, accepted, in_progress, completed
         clientId,
         assignedDriverId: null,
@@ -71,7 +74,10 @@ export const useNotificationStore = defineStore('notification', {
         completedAt: null,
         driverName: null,
         driverPhone: null,
+        numberOfAssistants: tripData.assistants || tripData.numberOfAssistants || 1,
       };
+      
+      console.log('✅ Viaje creado en notificationStore con tripStoreId:', trip.tripStoreId);
 
       this.pendingTrips.push(trip);
       this.saveToLocalStorage();
@@ -114,9 +120,11 @@ export const useNotificationStore = defineStore('notification', {
       trip.driverName = driverName;
       trip.driverPhone = driverPhone;
 
-      // Moure a activeTrips
-      this.activeTrips[driverId] = trip;
-      this.activeTrips[trip.clientId] = trip;
+      // Moure a activeTrips usant $patch per mantenir reactivitat
+      this.$patch((state) => {
+        state.activeTrips[driverId] = trip;
+        state.activeTrips[trip.clientId] = trip;
+      });
 
       // Guardar per sincronitzar amb tripStore més tard
       const tripStoreId = trip.tripStoreId;
@@ -148,7 +156,90 @@ export const useNotificationStore = defineStore('notification', {
       };
     },
 
+    // Cancelar viatge pel client
+    cancelTrip(tripStoreId, assignedDriverId = null) {
+      // IMPORTANTE: Recargar desde localStorage primero para asegurar que tenemos datos actuales
+      this.loadFromLocalStorage();
+      
+      // Buscar el viatge a pending trips (buscar per tripStoreId)
+      const pendingTrip = this.pendingTrips.find(t => t.tripStoreId === tripStoreId);
+      if (pendingTrip) {
+        // Si no ha estat acceptat, marcar como cancelado y eliminar-lo
+        pendingTrip.status = 'cancelled';
+        this.pendingTrips = this.pendingTrips.filter(t => t.tripStoreId !== tripStoreId);
+        this.saveToLocalStorage();
+        return { success: true, wasAccepted: false };
+      }
+
+      // Buscar a active trips per notificar el conductor (buscar per tripStoreId)
+      let found = false;
+      for (const driverId in this.activeTrips) {
+        const activeTrip = this.activeTrips[driverId];
+        if (activeTrip.tripStoreId === tripStoreId) {
+          found = true;
+          
+          // Notificar el conductor que el client ha cancel·lat PRIMEIRO
+          this.addNotification({
+            recipientId: activeTrip.assignedDriverId,
+            title: '❌ Viatge cancel·lat',
+            message: `El client ha cancel·lat el viatge de ${activeTrip.service}`,
+            type: 'warning',
+            channel: 'trip',
+            icon: '🛑',
+          });
+
+          // Después, actualizar activeTrips
+          // Crear nuevo objeto activeTrips SIN el viatge cancel·lat
+          const newActiveTrips = {};
+          for (const key in this.activeTrips) {
+            // Mantenir solo los viatges que NO sean el que se está cancelando
+            if (this.activeTrips[key].tripStoreId !== tripStoreId) {
+              newActiveTrips[key] = this.activeTrips[key];
+            }
+          }
+
+          
+          // Actualizar el estado con $patch
+          this.$patch({ activeTrips: newActiveTrips });
+          
+          // Guardar a localStorage usando saveToLocalStorage para mantener todo sincronizado
+          this.saveToLocalStorage();
+          
+          return { success: true, wasAccepted: true, driverId: activeTrip.assignedDriverId };
+        }
+      }
+
+      // Si no está en notificationStore pero tenemos driverId, notificar al conductor
+      if (assignedDriverId) {
+        
+        this.addNotification({
+          recipientId: assignedDriverId,
+          title: '❌ Viatge cancel·lat',
+          message: `El client ha cancel·lat el viatge assignat`,
+          type: 'warning',
+          channel: 'trip',
+          icon: '🛑',
+        });
+        
+        // Tambén intentar eliminar de activeTrips si existe
+        const newActiveTrips = {};
+        for (const key in this.activeTrips) {
+          if (this.activeTrips[key].tripStoreId !== tripStoreId) {
+            newActiveTrips[key] = this.activeTrips[key];
+          }
+        }
+        this.$patch({ activeTrips: newActiveTrips });
+        this.saveToLocalStorage();
+        
+        return { success: true, wasAccepted: true, driverId: assignedDriverId };
+      }
+
+      // Si no está en notificationStore y no tenemos driverId, solo retornar success
+      return { success: true, wasAccepted: false };
+    },
+
     // Iniciar viatge
+
     startTrip(tripId, driverId) {
       const trip = this.activeTrips[driverId];
       if (!trip) return false;
@@ -256,6 +347,7 @@ export const useNotificationStore = defineStore('notification', {
       if (typeof window !== 'undefined' && window.localStorage) {
         try {
           localStorage.setItem('notificationStore', JSON.stringify({
+            notifications: this.notifications,
             pendingTrips: this.pendingTrips,
             activeTrips: this.activeTrips,
           }));
@@ -270,10 +362,26 @@ export const useNotificationStore = defineStore('notification', {
       if (typeof window !== 'undefined' && window.localStorage) {
         try {
           const saved = localStorage.getItem('notificationStore');
+          console.log('📂 loadFromLocalStorage - Datos en localStorage:', saved ? JSON.parse(saved) : 'VACÍO');
           if (saved) {
             const data = JSON.parse(saved);
-            this.pendingTrips = data.pendingTrips || [];
-            this.activeTrips = data.activeTrips || {};
+            this.notifications = data.notifications || [];
+            this.pendingTrips = (data.pendingTrips || []).filter(t => t.status !== 'cancelled');
+            
+            console.log('📂 Pendingen Trips cargados:', this.pendingTrips.map(t => ({ id: t.id, tripStoreId: t.tripStoreId })));
+            
+            // Filtrar activeTrips para excluir viajes cancelados
+            const activeTrips = data.activeTrips || {};
+            const validActiveTrips = {};
+            for (const key in activeTrips) {
+              const trip = activeTrips[key];
+              // Solo cargar si el viaje existe y NO está cancelado
+              if (trip && trip.status !== 'cancelled') {
+                validActiveTrips[key] = trip;
+              }
+            }
+            this.activeTrips = validActiveTrips;
+            console.log('📂 Cargado de localStorage - activeTrips válidos:', Object.keys(validActiveTrips).length, '- Notificaciones:', this.notifications.length);
           }
         } catch (e) {
           console.error('Error loading from localStorage:', e);
@@ -305,6 +413,25 @@ export const useNotificationStore = defineStore('notification', {
     clearNotifications() {
       this.notifications = [];
       this.unreadCount = 0;
+    },
+
+    // Limpiar todo el store (llamado al logout)
+    clearStore() {
+      // NO limpiar notifications - el conductor las verá cuando vuelva a entrar
+      // this.notifications = [];
+      this.toasts = [];
+      this.unreadCount = 0;
+      // NO limpiar pendingTrips - son globales para todos los conductores
+      // this.pendingTrips = [];
+      this.activeTrips = {}; // Sí limpiar activeTrips - son específicos del usuario
+      this.supportChat = {
+        messages: [],
+        unreadMessages: 0,
+        isOpen: false
+      };
+      
+      // Guardar estado (sin activeTrips) a localStorage
+      this.saveToLocalStorage();
     },
 
     // Enviar mensaje de soporte

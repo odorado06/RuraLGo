@@ -310,10 +310,36 @@ const viewTripDetails = (trip) => {
   selectedTrip.value = trip;
 };
 
-const cancelTrip = (tripId) => {
+const cancelTrip = async (tripId) => {
   if (confirm('Estàs segur que vols cancelar aquest viatge?')) {
-    tripStore.cancelTrip(tripId);
-    alert('Viatge cancelat');
+    const { useNotificationStore } = await import('../store/notificationStore');
+    const notificationStore = useNotificationStore();
+    
+    try {
+      // El tripId que viene de trip.id es el tripStoreId (son lo mismo)
+      console.log('🔍 MyTrips cancelTrip - tripId/tripStoreId:', tripId);
+      
+      // Cancelar al tripStore y obtener información del driver
+      const tripStoreResult = tripStore.cancelTrip(tripId);
+      console.log('📋 tripStore.cancelTrip result:', tripStoreResult);
+      
+      // Cancelar al notificationStore con la información del driver
+      const result = notificationStore.cancelTrip(tripId, tripStoreResult?.driverId);
+      
+      if (result && result.success) {
+        if (result.wasAccepted) {
+          notificationStore.showToast('Viatge cancel·lat. El conductor ha rebut la notificació.', 'success');
+        } else {
+          notificationStore.showToast('Viatge cancel·lat correctament.', 'success');
+        }
+        selectedTrip.value = null;
+      } else {
+        notificationStore.showToast('Error al cancelar el viatge.', 'error');
+      }
+    } catch (error) {
+      console.error('❌ Error cancelant viatge:', error);
+      notificationStore.showToast('Error al cancelar el viatge.', 'error');
+    }
   }
 };
 
@@ -472,9 +498,7 @@ watch(selectedTrip, async (newTrip) => {
 }, { deep: true });
 
 onMounted(() => {
-  console.log('MyTrips component loaded');
-  console.log('Planned trips:', plannedTrips.value);
-  console.log('Completed trips:', completedTrips.value);
+
 });
 </script>
 

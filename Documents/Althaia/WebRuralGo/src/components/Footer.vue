@@ -131,20 +131,21 @@ const handleNewsletterSubscribe = () => {
 .app-footer {
   background: linear-gradient(135deg, #2c3e50 0%, #1a1a1a 100%);
   color: white;
-  margin-top: 80px;
-  padding: 60px 20px 20px;
+  margin-top: clamp(40px, 6vw, 80px);
+  padding: clamp(30px, 6vw, 60px) clamp(15px, 4vw, 20px) clamp(12px, 2vw, 20px);
 }
 
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 40px;
-  margin-bottom: 60px;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 100%, 250px), 1fr));
+  gap: clamp(20px, 4vw, 40px);
+  margin-bottom: clamp(30px, 6vw, 60px);
 }
 
 .footer-section {
@@ -154,37 +155,39 @@ const handleNewsletterSubscribe = () => {
 .footer-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: clamp(8px, 2vw, 10px);
+  margin-bottom: clamp(12px, 2vw, 20px);
 }
 
 .logo-icon {
-  width: 32px;
-  height: 32px;
+  width: clamp(24px, 5vw, 32px);
+  height: clamp(24px, 5vw, 32px);
   color: var(--primary-light);
+  flex-shrink: 0;
 }
 
 .footer-logo h3 {
-  font-size: 1.3rem;
+  font-size: clamp(1.1rem, 3vw, 1.3rem);
   margin: 0;
   color: var(--primary-light);
 }
 
 .footer-description {
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 20px;
+  margin-bottom: clamp(12px, 2vw, 20px);
   line-height: 1.6;
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
 }
 
 .social-links {
   display: flex;
-  gap: 15px;
+  gap: clamp(10px, 2vw, 15px);
+  flex-wrap: wrap;
 }
 
 .social-link {
-  width: 40px;
-  height: 40px;
+  width: clamp(36px, 8vw, 40px);
+  height: clamp(36px, 8vw, 40px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -192,6 +195,7 @@ const handleNewsletterSubscribe = () => {
   border-radius: 50%;
   transition: all 0.3s ease;
   color: white;
+  flex-shrink: 0;
 }
 
 .social-link:hover {
@@ -201,13 +205,14 @@ const handleNewsletterSubscribe = () => {
 }
 
 .social-link svg {
-  width: 20px;
-  height: 20px;
+  width: clamp(16px, 3vw, 20px);
+  height: clamp(16px, 3vw, 20px);
+  flex-shrink: 0;
 }
 
 .footer-section h4 {
-  font-size: 1.1rem;
-  margin-bottom: 20px;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
+  margin-bottom: clamp(12px, 2vw, 20px);
   color: white;
   font-weight: 600;
 }
@@ -215,17 +220,18 @@ const handleNewsletterSubscribe = () => {
 .footer-links {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .footer-links li {
-  margin-bottom: 12px;
+  margin-bottom: clamp(8px, 1.5vw, 12px);
 }
 
 .footer-links a {
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   transition: all 0.3s ease;
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
 }
 
 .footer-links a:hover {
@@ -236,45 +242,47 @@ const handleNewsletterSubscribe = () => {
 .contact-info {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: clamp(10px, 2vw, 15px);
 }
 
 .contact-item {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
+  gap: clamp(8px, 1.5vw, 12px);
   color: rgba(255, 255, 255, 0.7);
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
 }
 
 .contact-icon {
-  width: 20px;
-  height: 20px;
+  width: clamp(16px, 3vw, 20px);
+  height: clamp(16px, 3vw, 20px);
   color: var(--primary-light);
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .newsletter-section {
   background: rgba(78, 205, 196, 0.1);
-  padding: 30px;
+  padding: clamp(20px, 4vw, 30px);
   border-radius: 12px;
-  margin-bottom: 30px;
+  margin-bottom: clamp(20px, 3vw, 30px);
   text-align: center;
 }
 
 .newsletter-section h4 {
-  margin-bottom: 10px;
+  margin-bottom: clamp(8px, 1.5vw, 10px);
   color: white;
 }
 
 .newsletter-section p {
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 20px;
+  margin-bottom: clamp(12px, 2vw, 20px);
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
 }
 
 .newsletter-form {
   display: flex;
-  gap: 10px;
+  gap: clamp(8px, 2vw, 10px);
   max-width: 400px;
   margin: 0 auto;
   flex-wrap: wrap;
@@ -283,13 +291,14 @@ const handleNewsletterSubscribe = () => {
 
 .newsletter-form input {
   flex: 1;
-  min-width: 200px;
-  padding: 12px 15px;
+  min-width: clamp(150px, 70%, 200px);
+  padding: clamp(8px, 2vw, 12px) clamp(10px, 2vw, 15px);
   border: 1px solid rgba(78, 205, 196, 0.3);
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.05);
   color: white;
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  box-sizing: border-box;
 }
 
 .newsletter-form input::placeholder {
@@ -303,12 +312,14 @@ const handleNewsletterSubscribe = () => {
 }
 
 .btn {
-  padding: 12px 20px;
+  padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px);
   border: none;
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -322,29 +333,29 @@ const handleNewsletterSubscribe = () => {
 }
 
 .btn-small {
-  padding: 10px 20px;
-  font-size: 0.9rem;
+  padding: clamp(8px, 1.5vw, 10px) clamp(12px, 2vw, 20px);
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
 }
 
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 30px;
+  padding-top: clamp(15px, 3vw, 30px);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: clamp(10px, 2vw, 20px);
 }
 
 .footer-bottom p {
   color: rgba(255, 255, 255, 0.6);
   margin: 0;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
 }
 
 .footer-badges {
   display: flex;
-  gap: 10px;
+  gap: clamp(8px, 1.5vw, 10px);
   flex-wrap: wrap;
   justify-content: flex-end;
 }
@@ -352,16 +363,28 @@ const handleNewsletterSubscribe = () => {
 .badge {
   background: rgba(78, 205, 196, 0.2);
   color: var(--primary-light);
-  padding: 6px 12px;
+  padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px);
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem);
   font-weight: 500;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
   .footer-bottom {
     justify-content: center;
     text-align: center;
+    flex-direction: column;
   }
 
   .footer-badges {
@@ -370,6 +393,7 @@ const handleNewsletterSubscribe = () => {
 
   .newsletter-form {
     flex-direction: column;
+    width: 100%;
   }
 
   .newsletter-form input,

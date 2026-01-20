@@ -200,7 +200,7 @@ const scrollToSection = (sectionId) => {
 .hero-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  gap: clamp(30px, 5vw, 60px);
   align-items: center;
   max-width: 1200px;
   width: 100%;
@@ -239,9 +239,9 @@ const scrollToSection = (sectionId) => {
 }
 
 .hero-title {
-  font-size: 4rem;
+  font-size: clamp(28px, 8vw, 4rem);
   font-weight: 900;
-  margin-bottom: 20px;
+  margin-bottom: clamp(12px, 2vw, 20px);
   letter-spacing: -2px;
   color: #ffffff;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -479,34 +479,65 @@ const scrollToSection = (sectionId) => {
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .hero-content {
     grid-template-columns: 1fr;
-    gap: 40px;
-  }
-
-  .hero-title {
-    font-size: 2.5rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1.2rem;
-  }
-
-  .section-title {
-    font-size: 1.8rem;
+    gap: clamp(20px, 4vw, 40px);
   }
 
   .hero-buttons {
+    width: 100%;
     flex-direction: column;
   }
 
   .btn-lg {
     width: 100%;
+    min-height: 44px;
+    min-width: auto;
   }
 
-  .cta h2 {
-    font-size: 1.8rem;
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content {
+    padding: 0 clamp(10px, 3vw, 15px);
+  }
+
+  .btn {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .btn-lg {
+    width: 100%;
+  }
+}
+
+/* Landscape Mode */
+@media (max-height: 500px) and (orientation: landscape) {
+  .features {
+    padding: clamp(20px, 3vh, 40px) clamp(15px, 4vw, 20px);
+  }
+
+  .steps-grid {
+    gap: clamp(15px, 2vh, 25px);
   }
 }
 </style>

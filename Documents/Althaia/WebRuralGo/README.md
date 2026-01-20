@@ -2,52 +2,113 @@
 
 Plataforma rural de transport sostenible amb tecnologia de ruta, notificacions, pagaments i activitats comunitàries.
 
-## 🚀 Instal·lació
+## 🚀 Quick Start (5 minutos)
 
 ```bash
-# Instal·lar dependències
+# 1. Instalar dependències
 npm install
 
-# Desenvolupament
+# 2. Instalar servidor backend
+cd server && npm install && cd ..
+
+# 3. Configurar MongoDB (ver QUICK_START.md)
+
+# 4. Executar backend (Terminal 1)
+cd server && npm run dev
+
+# 5. Executar frontend (Terminal 2)
 npm run dev
 
-# Build
-npm run build
+# 6. Abrir en navegador
+http://localhost:5173
 ```
 
-## 🗺️ Configuració de Google Maps
+## 📚 Documentación Completa
 
-El mapa necessita una clau API de Google Maps per funcionar correctament.
+| Documento | Tiempo | Para |
+|-----------|--------|------|
+| [QUICK_START.md](QUICK_START.md) | 5 min | Empezar ya |
+| [RESUMEN_BACKEND.md](RESUMEN_BACKEND.md) | 10 min | Entender arquitectura |
+| [MONGODB_GUIDE.md](MONGODB_GUIDE.md) | 15 min | Configurar base de datos |
+| [FRONTEND_INTEGRATION.md](FRONTEND_INTEGRATION.md) | 10 min | Usar backend en componentes |
+| [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) | 20 min | Desplegar a producción |
+| [DOCUMENTACION.md](DOCUMENTACION.md) | - | Índice general |
 
-### Pas 1: Obtenir una clau API
+## 🏗️ Arquitectura
 
-1. Accedeix a [Google Cloud Console](https://console.cloud.google.com/)
-2. Crea un nou projecte o selecciona un existent
-3. Activa les següents APIs:
-   - Maps JavaScript API
-   - Places API
-   - Directions API
-   - Distance Matrix API
-
-4. Crea una clau API:
-   - Vés a "Credencials"
-   - Crea una nova clau API
-   - (Opcional) Restringeix la clau a dominis específics
-
-### Pas 2: Configurar la clau al projecte
-
-1. Copia el fitxer `.env.example` a `.env`:
-```bash
-cp .env.example .env
+```
+Frontend (Vue 3 + Vite)
+    ↓ API REST
+Backend (Node.js + Express)
+    ↓ Queries
+MongoDB Atlas (Cloud)
+    ↕ Socket.io (Tiempo real)
 ```
 
-2. Edita `.env` i substitueix la clau de demo:
+## ✨ Características
+
+### ✅ Backend Completo
+- Express.js con APIs REST
+- MongoDB Atlas integrado
+- Socket.io para notificaciones en tiempo real
+- Autenticación segura con JWT
+- Modelos: Usuarios, Viajes, Notificaciones
+
+### ✅ Sistema de Viajes Real
+- Pasajeros solicitan viajes
+- Conductores reciben notificaciones en vivo
+- Aceptación de viajes instantánea
+- Ubicación en tiempo real del conductor
+- Historial y calificaciones
+
+### ✅ Notificaciones Real-time
+- Nuevos viajes disponibles
+- Aceptación de viajes
+- Inicio y finalización
+- Ubicación del conductor
+
+### ✅ Listo para Producción
+- 100% gratuito para empezar
+- Escalable a millones de usuarios
+- Desplegable en Railway (backend)
+- Desplegable en Vercel (frontend)
+- HTTPS y CORS configurados
+
+## 🗺️ Configuración Google Maps
+
+1. Obtener clé en [Google Cloud Console](https://console.cloud.google.com/)
+2. Activar: Maps JavaScript, Places, Directions, Distance Matrix APIs
+3. Crear clé API
+4. Pegar en `.env.local`:
 ```env
-VITE_GOOGLE_MAPS_API_KEY=AIzaSy_TuClauRealAqui_1234567890ABC
+VITE_GOOGLE_MAPS_API_KEY=TuClaveAqui
 ```
 
-3. Reinicia el servidor de desenvolupament:
-```bash
+## 📦 Stack Tecnológico
+
+**Frontend:**
+- Vue 3
+- Vite
+- Pinia (state management)
+- Capacitor (Android)
+
+**Backend:**
+- Node.js
+- Express
+- Socket.io
+- Mongoose (MongoDB)
+- JWT + bcryptjs
+
+**Base de Datos:**
+- MongoDB Atlas (cloud)
+- Gratis hasta 512MB
+
+**Hosting:**
+- Vercel (Frontend)
+- Railway/Render (Backend)
+- MongoDB Atlas (Database)
+
+## 📱 Características Android
 npm run dev
 ```
 

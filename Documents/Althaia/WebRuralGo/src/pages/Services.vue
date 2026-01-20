@@ -120,9 +120,6 @@
           </div>
 
           <div class="modal-footer">
-            <button @click="requestService" class="btn btn-primary btn-large">
-              <svg class="btn-icon" viewBox="0 0 24 24"><path :d="mdiPhone" fill="currentColor" /></svg> Demanar {{ selectedService.name }}
-            </button>
             <button @click="selectedService = null" class="btn btn-secondary">
               Tancar
             </button>
@@ -334,6 +331,8 @@ const requestService = () => {
   align-items: center;
   justify-content: center;
   gap: 12px;
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .title-icon {
@@ -345,7 +344,9 @@ const requestService = () => {
 
 .header p {
   font-size: 16px;
-  opacity: 0.9;
+  opacity: 1;
+  color: #ffffff;
+  font-weight: 500;
 }
 
 /* Filter Section */
