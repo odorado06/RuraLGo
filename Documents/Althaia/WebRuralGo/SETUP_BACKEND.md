@@ -20,7 +20,8 @@ WebRuralGo/
 
 ## 1️⃣ Configurar MongoDB Atlas (Gratuito)
 
-1. Ir a https://www.mongodb.com/cloud/atlas
+1. Ir a http
+s://www.mongodb.com/cloud/atlas
 2. Crear cuenta gratuita
 3. Crear un nuevo cluster (seleccionar M0 - Free)
 4. En "Database Access": Crear usuario y contraseña
