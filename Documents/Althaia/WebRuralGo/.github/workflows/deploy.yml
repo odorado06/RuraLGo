@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          path: repo
       
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -16,13 +18,14 @@ jobs:
           node-version: '20'
       
       - name: Install dependencies
-        run: npm install
+        run: cd repo && npm install
       
       - name: Build
-        run: npm run build
+        run: cd repo && npm run build
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./repo/dist
+
